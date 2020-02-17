@@ -29,4 +29,5 @@ extension RootComponent: LoggedInDependency {
     var loggedInViewController: LoggedInViewControllable {
         return rootViewController
     }
+
 }
