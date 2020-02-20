@@ -10,6 +10,8 @@ import RIBs
 import RxSwift
 
 protocol LoggedInRouting: Routing {
+    func routeToTicTacToe()
+    func routeToOffGame()
     func cleanupViews()
     // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
 }
@@ -40,6 +42,12 @@ final class LoggedInInteractor: Interactor, LoggedInInteractable {
     }
     
     func startTicTacToe() {
-        
+        router?.routeToTicTacToe()
+    }
+    
+    // - MARK: TicTacToeListener
+    
+    func gameDidEnd() {
+        router?.routeToOffGame()
     }
 }

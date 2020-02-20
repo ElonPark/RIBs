@@ -13,7 +13,7 @@ protocol OffGameDependency: Dependency {
     // created by this RIB.
 }
 
-final class OffGameComponent: Component<OffGameDependency>, TicTacToeDependency {
+final class OffGameComponent: Component<OffGameDependency> {
 
     // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
 }
@@ -31,14 +31,12 @@ final class OffGameBuilder: Builder<OffGameDependency>, OffGameBuildable {
     }
 
     func build(withListener listener: OffGameListener) -> OffGameRouting {
-        let component = OffGameComponent(dependency: dependency)
+        _ = OffGameComponent(dependency: dependency)
         let viewController = OffGameViewController()
         let interactor = OffGameInteractor(presenter: viewController)
         interactor.listener = listener
         
-        let ticTacToeBuilder = TicTacToeBuilder(dependency: component)
         return OffGameRouter(interactor: interactor,
-                             viewController: viewController,
-                             ticTacToeBuilder: ticTacToeBuilder)
+                             viewController: viewController)
     }
 }

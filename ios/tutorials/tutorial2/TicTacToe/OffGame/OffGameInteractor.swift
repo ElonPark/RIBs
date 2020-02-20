@@ -11,7 +11,6 @@ import RxSwift
 
 protocol OffGameRouting: ViewableRouting {
     // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
-    func rotueToTicTacToe()
 }
 
 protocol OffGamePresentable: Presentable {
@@ -49,7 +48,7 @@ final class OffGameInteractor: PresentableInteractor<OffGamePresentable>, OffGam
     // MARK: - OffGamePresentableListener
     
     func startGame() {
-        router?.rotueToTicTacToe()
+        listener?.startTicTacToe()
     }
     
     // MARK: - TicTacToePresentableListener
