@@ -20,14 +20,15 @@ import UIKit
 
 protocol TicTacToePresentableListener: class {
     func placeCurrentPlayerMark(atRow row: Int, col: Int)
-    func closeGame()
 }
 
 final class TicTacToeViewController: UIViewController, TicTacToePresentable, TicTacToeViewControllable {
 
     weak var listener: TicTacToePresentableListener?
 
-    init() {
+    init(player1Name: String, player2Name: String) {
+        self.player1Name = player1Name
+        self.player2Name = player2Name
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -50,24 +51,27 @@ final class TicTacToeViewController: UIViewController, TicTacToePresentable, Tic
         cell?.backgroundColor = playerType.color
     }
 
-    func announce(winner: PlayerType) {
+    func announce(winner: PlayerType, withCompletionHandler handler: @escaping () -> Void) {
         let winnerString: String = {
             switch winner {
             case .player1:
-                return "Red"
+                return player1Name
             case .player2:
-                return "Blue"
+                return player2Name
             }
         }()
-        let alert = UIAlertController(title: "\(winnerString) Won!", message: nil, preferredStyle: .alert)
-        let closeAction = UIAlertAction(title: "Close Game", style: UIAlertActionStyle.default) { [weak self] _ in
-            self?.listener?.closeGame()
-        }
-        alert.addAction(closeAction)
-        present(alert, animated: true, completion: nil)
+        
+        presentAlert(withTitle: "\(winnerString) Won!", withCompletionHandler: handler)
+    }
+    
+    func tieAnnounce(withCompletionHandler handler: @escaping () -> Void) {
+        presentAlert(withTitle: "Tie!", withCompletionHandler: handler)
     }
 
     // MARK: - Private
+    
+    private let player1Name: String
+    private let player2Name: String
 
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -86,6 +90,18 @@ final class TicTacToeViewController: UIViewController, TicTacToePresentable, Tic
             maker.center.equalTo(self.view.snp.center)
             maker.size.equalTo(CGSize(width: CGFloat(GameConstants.colCount) * Constants.cellSize, height: CGFloat(GameConstants.rowCount) * Constants.cellSize))
         }
+    }
+    
+    private func presentAlert(withTitle title: String, withCompletionHandler handler: @escaping () -> Void) {
+        let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
+        let closeAction = UIAlertAction(
+            title: "Close Game",
+            style: UIAlertActionStyle.default
+        ) { _ in
+            handler()
+        }
+        alert.addAction(closeAction)
+        present(alert, animated: true, completion: nil)
     }
 }
 
