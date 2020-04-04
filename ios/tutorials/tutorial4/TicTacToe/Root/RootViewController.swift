@@ -46,10 +46,7 @@ final class RootViewController: UIViewController, RootPresentable, RootViewContr
 
     func replaceModal(viewController: ViewControllable?) {
         targetViewController = viewController
-
-        guard !animationInProgress else {
-            return
-        }
+        guard !animationInProgress else { return }
 
         if presentedViewController != nil {
             animationInProgress = true

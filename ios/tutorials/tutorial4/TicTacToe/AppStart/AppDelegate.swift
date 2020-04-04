@@ -18,13 +18,17 @@ import RIBs
 import RxSwift
 import UIKit
 
+protocol UrlHandler: class {
+    func handle(_ url: URL)
+}
+
 /// Game app delegate.
 @UIApplicationMain
 public class AppDelegate: UIResponder, UIApplicationDelegate {
-
+    
     /// The window.
     public var window: UIWindow?
-
+    
     /// Tells the delegate that the launch process is almost done and the app is almost ready to run.
     ///
     /// - parameter application: Your singleton app object.
@@ -36,14 +40,22 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         let window = UIWindow(frame: UIScreen.main.bounds)
         self.window = window
 
-        let launchRouter = RootBuilder(dependency: AppComponent()).build()
-        self.launchRouter = launchRouter
-        launchRouter.launch(from: window)
+        let result = RootBuilder(dependency: AppComponent()).build()
+        launchRouter = result.launchRouter
+        urlHandler = result.urlHandler
+        launchRouter?.launch(from: window)
 
+        return true
+    }
+    
+    public func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        urlHandler?.handle(url)
         return true
     }
 
     // MARK: - Private
 
     private var launchRouter: LaunchRouting?
+    
+    private var urlHandler: UrlHandler?
 }
